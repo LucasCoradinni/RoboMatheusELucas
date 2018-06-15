@@ -1,4 +1,5 @@
-﻿using Robocode;
+﻿
+using Robocode;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -10,6 +11,8 @@ namespace RoboMatheusELucas
 {
    public class Robozerah : AdvancedRobot
     {
+        int shots = 0;
+        int a = 0;
         public override void Run()
         {
             SetColors(Color.Black, Color.Silver, Color.Red);
@@ -19,22 +22,21 @@ namespace RoboMatheusELucas
                 TurnRadarRight(360);
                 Ahead(100);
                 Back(100);
-
             }
         }
+
         public override void OnHitByBullet(HitByBulletEvent e)
         {
-            TurnRight(60);
-            Ahead(20);
-
+            Ahead(100);
+            TurnRight(90);
         }
+
         public override void OnHitRobot(HitRobotEvent inimigo)
         {
-            TurnRight(inimigo.Bearing);
-            Fire(3);
+            Ahead(100);
+            TurnRight(90);
 
         }
-
 
         public override void OnHitWall(HitWallEvent e)
         {
@@ -42,25 +44,17 @@ namespace RoboMatheusELucas
             TurnLeft(180);
         }
 
+        
         public override void OnScannedRobot(ScannedRobotEvent e)
         {
             mira(e.Bearing);
-            Fire(1);
-
-            if (e.Energy < 12)
-            {
-                tiroFatal(e.Energy);
-            }
-            else
-            {
-                Fire(1);
-            }
-
             fogo(e.Distance);
-
         }
-
-
+        
+        public override void OnWin(WinEvent e)
+        {
+            risadinha();
+        }
 
         public void mira(double Adv)
         {
@@ -78,12 +72,10 @@ namespace RoboMatheusELucas
             }
             TurnGunRight(A);
         }
-
         public void tiroFatal(double EnergiaIni)
         {
             double Tiro = (EnergiaIni / 4) + .1;
             Fire(Tiro);
-
         }
 
         public void fogo(double Distancia)
@@ -92,7 +84,7 @@ namespace RoboMatheusELucas
             {
                 Fire(1);
             }
-            else if (Distancia > 50)
+            else if (Distancia > 30)
             {
                 Fire(2);
             }
@@ -101,8 +93,16 @@ namespace RoboMatheusELucas
                 Fire(3);
             }
         }
-
+        public void risadinha()
+        {
+            for (int i = 0; i < 50; i++)
+            {
+               TurnRight(30);
+               TurnLeft(30);
+            }
+        }
 
     }
+
 }
     
