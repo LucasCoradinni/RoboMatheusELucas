@@ -9,10 +9,9 @@ using System.Threading.Tasks;
 
 namespace RoboMatheusELucas
 {
-   public class Robozerah : AdvancedRobot
+    public class Robozerah : AdvancedRobot
     {
-        int shots = 0;
-        int a = 0;
+
         public override void Run()
         {
             SetColors(Color.Black, Color.Silver, Color.Red);
@@ -31,10 +30,9 @@ namespace RoboMatheusELucas
             TurnRight(90);
         }
 
-        public override void OnHitRobot(HitRobotEvent inimigo)
+        public override void OnHitRobot(HitRobotEvent e)
         {
-            Ahead(100);
-            TurnRight(90);
+            tiroFatal(e.Bearing);
 
         }
 
@@ -44,34 +42,35 @@ namespace RoboMatheusELucas
             TurnLeft(180);
         }
 
-        
+
         public override void OnScannedRobot(ScannedRobotEvent e)
         {
-            mira(e.Bearing);
-            fogo(e.Distance);
+
+            double max = 100;
+
+            if (e.Energy < max)
+            {
+                max = e.Energy;
+                miraCanhao(e.Bearing, max, Energy);
+            }
+            else if (e.Energy >= max)
+            {
+                max = e.Energy;
+                miraCanhao(e.Bearing, max, Energy);
+            }
+            else if (Others == 1)
+            {
+                max = e.Energy;
+                miraCanhao(e.Bearing, max, Energy);
+            }
         }
-        
+
         public override void OnWin(WinEvent e)
         {
             risadinha();
         }
 
-        public void mira(double Adv)
-        {
-            double A = Heading + Adv - GunHeading;
-            if (!(A > -180 && A <= 180))
-            {
-                while (A <= -180)
-                {
-                    A += 360;
-                }
-                while (A > 180)
-                {
-                    A -= 360;
-                }
-            }
-            TurnGunRight(A);
-        }
+        
         public void tiroFatal(double EnergiaIni)
         {
             double Tiro = (EnergiaIni / 4) + .1;
@@ -97,9 +96,42 @@ namespace RoboMatheusELucas
         {
             for (int i = 0; i < 50; i++)
             {
-               TurnRight(30);
-               TurnLeft(30);
+                TurnRight(30);
+                TurnLeft(30);
             }
+        }
+
+        public void miraCanhao(double PosIni, double energiaIni, double minhaEnergia)
+        {
+            double Distancia = PosIni;
+            double Coordenadas = Heading + PosIni - GunHeading;
+            double PontoQuarenta = (energiaIni / 4) + .1;
+            if (!(Coordenadas > -180 && Coordenadas <= 180))
+            {
+                while (Coordenadas <= -180)
+                {
+                    Coordenadas += 360;
+                }
+                while (Coordenadas > 180)
+                {
+                    Coordenadas -= 360;
+                }
+            }
+            TurnGunRight(Coordenadas);
+
+            if (Distancia > 200 || minhaEnergia < 15 || energiaIni > minhaEnergia)
+            {
+                Fire(1);
+            }
+            else if (Distancia > 50)
+            {
+                Fire(2);
+            }
+            else
+            {
+                Fire(3);
+            }
+
         }
 
     }
