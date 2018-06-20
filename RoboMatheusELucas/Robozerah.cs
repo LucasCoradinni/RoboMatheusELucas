@@ -10,28 +10,28 @@ namespace RoboMatheusELucas
 {
     public class Robozerah : AdvancedRobot
     {
-        private bool peek;
-        private double moveAmount;
+        private bool espiar;
+        private double mover;
 
         public override void Run()
         {
-            SetColors(Color.Black, Color.Silver, Color.Red);
+            SetColors(Color.Black, Color.Silver, Color.Gold);
 
-            moveAmount = Math.Max(BattleFieldWidth, BattleFieldHeight);
-            peek = false;
+            mover = Math.Max(BattleFieldWidth, BattleFieldHeight);
+            espiar = false;
 
             TurnLeft(Heading % 90);
-            Ahead(moveAmount);
+            Ahead(mover);
 
-            peek = true;
+            espiar = true;
             TurnGunRight(90);
             TurnRight(90);
 
             while (true)
             {
-                peek = true;
-                Ahead(moveAmount);
-                peek = false;
+                espiar = true;
+                Ahead(mover);
+                espiar = false;
                 TurnRight(90);
             }
         }
@@ -39,47 +39,34 @@ namespace RoboMatheusELucas
 
         public override void OnHitRobot(HitRobotEvent e)
         {
-            if (e.Bearing > -10 && e.Bearing < 90)
-            {
-                Back(100);
-            }
-            else
-            {
-                Ahead(100);
-            }
+            Fire(1);
+            Execute();
         }
         public override void OnScannedRobot(ScannedRobotEvent e)
         {
-
-            double max = 100;
-
-            if (e.Energy < max)
-            {
-                max = e.Energy;
-                miraCanhao(e.Bearing, max, Energy);
-            }
-            else if (e.Energy >= max)
-            {
-                max = e.Energy;
-                miraCanhao(e.Bearing, max, Energy);
-            }
-            else if (Others == 1)
-            {
-                max = e.Energy;
-                miraCanhao(e.Bearing, max, Energy);
-            }
+            fogo(e.Bearing);
+            Execute();
 
         }
         public override void OnWin(WinEvent e)
         {
+            Ahead(100);
             risadinha();
+            Execute();
         }
 
+        public override void OnHitByBullet(HitByBulletEvent e)
+
+        {
+           
+
+        }
 
         public void tiroFatal(double EnergiaIni)
         {
             double Tiro = (EnergiaIni / 4) + .1;
             Fire(Tiro);
+            Execute();
         }
 
         public void fogo(double Distancia)
@@ -106,38 +93,7 @@ namespace RoboMatheusELucas
             }
         }
 
-        public void miraCanhao(double PosIni, double energiaIni, double minhaEnergia)
-        {
-            double Distancia = PosIni;
-            double Coordenadas = Heading + PosIni - GunHeading;
-            double PontoQuarenta = (energiaIni / 4) + .1;
-            if (!(Coordenadas > -90 && Coordenadas <= 180))
-            {
-                while (Coordenadas <= -90)
-                {
-                    Coordenadas += 180;
-                }
-                while (Coordenadas > 90)
-                {
-                    Coordenadas -= 180;
-                }
-            }
-            TurnGunRight(90);
-
-            if (Distancia > 200 || minhaEnergia < 15 || energiaIni > minhaEnergia)
-            {
-                Fire(1);
-            }
-            else if (Distancia > 50)
-            {
-                Fire(2);
-            }
-            else
-            {
-                Fire(3);
-            }
-
-        }
+     
 
     }
 
