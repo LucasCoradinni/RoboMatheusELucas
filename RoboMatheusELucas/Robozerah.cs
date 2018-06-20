@@ -1,5 +1,4 @@
-﻿
-using Robocode;
+﻿using Robocode;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,38 +10,44 @@ namespace RoboMatheusELucas
 {
     public class Robozerah : AdvancedRobot
     {
+        private bool peek;
+        private double moveAmount;
 
         public override void Run()
         {
             SetColors(Color.Black, Color.Silver, Color.Red);
 
+            moveAmount = Math.Max(BattleFieldWidth, BattleFieldHeight);
+            peek = false;
+
+            TurnLeft(Heading % 90);
+            Ahead(moveAmount);
+
+            peek = true;
+            TurnGunRight(90);
+            TurnRight(90);
+
             while (true)
             {
-                TurnRadarRight(360);
-                Ahead(100);
-                Back(100);
+                peek = true;
+                Ahead(moveAmount);
+                peek = false;
+                TurnRight(90);
             }
         }
 
-        public override void OnHitByBullet(HitByBulletEvent e)
-        {
-            Ahead(100);
-            TurnRight(90);
-        }
 
         public override void OnHitRobot(HitRobotEvent e)
         {
-            tiroFatal(e.Bearing);
-
+            if (e.Bearing > -10 && e.Bearing < 90)
+            {
+                Back(100);
+            }
+            else
+            {
+                Ahead(100);
+            }
         }
-
-        public override void OnHitWall(HitWallEvent e)
-        {
-            Ahead(200);
-            TurnLeft(180);
-        }
-
-
         public override void OnScannedRobot(ScannedRobotEvent e)
         {
 
@@ -63,14 +68,14 @@ namespace RoboMatheusELucas
                 max = e.Energy;
                 miraCanhao(e.Bearing, max, Energy);
             }
-        }
 
+        }
         public override void OnWin(WinEvent e)
         {
             risadinha();
         }
 
-        
+
         public void tiroFatal(double EnergiaIni)
         {
             double Tiro = (EnergiaIni / 4) + .1;
@@ -106,18 +111,18 @@ namespace RoboMatheusELucas
             double Distancia = PosIni;
             double Coordenadas = Heading + PosIni - GunHeading;
             double PontoQuarenta = (energiaIni / 4) + .1;
-            if (!(Coordenadas > -180 && Coordenadas <= 180))
+            if (!(Coordenadas > -90 && Coordenadas <= 180))
             {
-                while (Coordenadas <= -180)
+                while (Coordenadas <= -90)
                 {
-                    Coordenadas += 360;
+                    Coordenadas += 180;
                 }
-                while (Coordenadas > 180)
+                while (Coordenadas > 90)
                 {
-                    Coordenadas -= 360;
+                    Coordenadas -= 180;
                 }
             }
-            TurnGunRight(Coordenadas);
+            TurnGunRight(90);
 
             if (Distancia > 200 || minhaEnergia < 15 || energiaIni > minhaEnergia)
             {
@@ -137,4 +142,5 @@ namespace RoboMatheusELucas
     }
 
 }
-    
+
+

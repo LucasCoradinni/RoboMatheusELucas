@@ -31,7 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="robocode">
-      <HintPath>..\..\..\..\Desktop\robocode\libs\robocode.dll</HintPath>
+      <HintPath>..\..\robocode\libs\robocode.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
