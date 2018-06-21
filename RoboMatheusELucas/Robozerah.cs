@@ -22,51 +22,45 @@ namespace RoboMatheusELucas
 
             TurnLeft(Heading % 90);
             Ahead(mover);
-
-            espiar = true;
-            TurnGunRight(90);
-            TurnRight(90);
-
+            
             while (true)
             {
+                SetTurnRadarRight(360);
                 espiar = true;
                 Ahead(mover);
                 espiar = false;
                 TurnRight(90);
             }
         }
-
-
         public override void OnHitRobot(HitRobotEvent e)
         {
-            Fire(1);
-            Execute();
+          Scan();
+          if (Energy > 30)
+          Fire(3);	
+
+          espiar = true;			
+
+         changuePosition();
+
+         Ahead(100);
+         Fire(3);
+ 
         }
         public override void OnScannedRobot(ScannedRobotEvent e)
         {
+            mira(e.Bearing);
             fogo(e.Bearing);
-            Execute();
-
         }
+
         public override void OnWin(WinEvent e)
         {
-            Ahead(100);
-            risadinha();
-            Execute();
+                 risadinha();
         }
 
         public override void OnHitByBullet(HitByBulletEvent e)
 
         {
-           
-
-        }
-
-        public void tiroFatal(double EnergiaIni)
-        {
-            double Tiro = (EnergiaIni / 4) + .1;
-            Fire(Tiro);
-            Execute();
+            Ahead(50); 
         }
 
         public void fogo(double Distancia)
@@ -92,8 +86,29 @@ namespace RoboMatheusELucas
                 TurnLeft(30);
             }
         }
+        public void mira(double Adv)
+        {
+            double A = Heading + Adv - GunHeading;
+            if (!(A > -180 && A <= 180))
+            {
+                while (A <= -180)
+                {
+                    A += 360;
+                }
+                while (A > 180)
+                {
+                    A -= 360;
+                }
+            }
+            TurnGunRight(A);
+        }
 
-     
+        public void changuePosition()
+        {
+
+            Ahead(mover);
+            TurnLeft(90);
+        }
 
     }
 
